@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=7">
+    <meta:renderer></meta:renderer>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta:author></meta:author>
+    <meta name="keywords" content="Keyword 1,Keyword 2">
+    <meta name="description" content="description">
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <style type="text/css">
+    #moist-graph {
+        position: relative;
+        /*// border: $border-test;*/
+        height: 350px;
+        width: 350px;
+        margin-top: 20px;
+        margin-left: 145px;
+        margin-right: 145px;
+    }
+    
+    #moisture-value {
+        /*// border: $border-test;*/
+        position: absolute;
+        top: 135px;
+        left: 130px;
+        font-size: 60px;
+        /*font-weight: lighter;*/
+    }
+    </style>
+</head>
+
+<body>
+
+</html>
+<div id="moisture-value">0</div>
+<svg height="350" width="350">
+    <a transform="translate(175,175)">
+        <g>
+            <circle r="175" fill="#b3eff6" stroke-width="3"></circle>
+        </g>
+        <g>
+            <clipPath id="g-clip">
+                <rect id="g-clip-rect" y="-175" fill="#66cccc" height="20" x="-175" width="350">
+                </rect>
+            </clipPath>
+            <circle clip-path="url(#g-clip)" r="170" fill="#fff" stroke-width="3"></circle>
+        </g>
+    </a>
+</svg>
+</body>
+<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.1.1.min.js"></script>
+<script type="text/javascript">
+var get_values_url = "{{=URL('api', 'get_values')}}"
+var humid = 0;
+var solar = 0;
+var temp = 0;
+var moist = 0;
+
+var get_values = function() {
+    $.getJSON(get_values_url,
+        function(info) {
+            humid = info.humid;
+            solar = info.solar;
+            temp = info.temp;
+            moist = info.moist;
+            // print('get success');
+            update_moist_graph();
+        }
+    );
+};
+
+var update_moist_graph = function() {
+    jQuery('#g-clip-rect').attr('height', 380 - (moist * 4));
+    jQuery('#moisture-value').text(moist);
+};
+
+get_values();
+var get_value_id = setInterval(get_values, 2000);
+</script>
